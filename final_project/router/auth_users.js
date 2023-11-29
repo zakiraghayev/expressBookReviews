@@ -24,7 +24,7 @@ regd_users.post("/login", (req,res) => {
   if (!user) return res.status(400).json({message: "User with credentials could not be found!"});
 
   const token = jwt.sign({ data: user }, "process.env.JWT_SECRET", { expiresIn: 60 * 60 })
-  req.session.authorization = { token }
+  req.session.authorization = { accessToken: token }
   return res.status(200).json({message: "Successfull login!"});
 });
 
