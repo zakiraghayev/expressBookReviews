@@ -34,8 +34,13 @@ app.use("/customer/auth/*", function auth(req, res, next) {
  
 const PORT =5000;
 
+app.use((error, req, res, next) => {
+    res.status(500).json({ message: error.message });
+});
+
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
 app.use("/async", genl_routes_async);
+
 
 app.listen(PORT,()=>console.log("Server is running"));

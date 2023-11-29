@@ -3,43 +3,40 @@ const axios = require('axios');
 const public_users_async = express.Router();
 
 const BASE_URL = "http://localhost:5000"
-// Get the book list available in the shop
-public_users_async.get('/', async function (req, res) {
-    //Write your code here
 
-    try {
-        const response = await axios.get(`${BASE_URL}/`);
-        return res.status(200).json(response.data);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+const axiosInstance = axios.create({
+    baseURL: BASE_URL
 });
 
-// Get book details based on ISBN
-public_users_async.get('/isbn/:isbn',async function (req, res) {
-    //Write your code here
+function asyncHandler(fn) {
+    return function(req, res, next) {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    };
+}
+
+
+public_users_async.get('/', asyncHandler(async function (req, res) {
+    const response = await axiosInstance.get('/');
+    res.status(200).json(response.data);
+}));
+
+public_users_async.get('/isbn/:isbn', asyncHandler(async function (req, res) {
     const { isbn } = req.params;
+    const response = await axiosInstance.get(`/isbn/${isbn}`);
+    res.status(200).json(response.data);
+}));
 
-    try {
-        const response = await axios.get(`${BASE_URL}/isbn/${isbn}`);
-        return res.status(200).json(response.data);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-
-});
-
-// Get book details based on author
-public_users_async.get('/author/:author', async function (req, res) {
-    //Write your code here
+public_users_async.get('/author/:author', asyncHandler(async function (req, res) {
     const { author } = req.params;
-  
-    try {
-        const response = await axios.get(`${BASE_URL}/author/${author}`);
-        return res.status(200).json(response.data);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-  });
+    const response = await axiosInstance.get(`/author/${author}`);
+    res.status(200).json(response.data);
+}));
+
+public_users_async.get('/title/:title', asyncHandler(async function (req, res) {
+    const { title } = req.params;
+    const response = await axiosInstance.get(`/title/${title}`);
+    res.status(200).json(response.data);
+}));
+
 
 module.exports.general = public_users_async;
