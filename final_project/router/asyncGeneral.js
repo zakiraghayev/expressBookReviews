@@ -29,4 +29,17 @@ public_users_async.get('/isbn/:isbn',async function (req, res) {
 
 });
 
+// Get book details based on author
+public_users_async.get('/author/:author', async function (req, res) {
+    //Write your code here
+    const { author } = req.params;
+  
+    try {
+        const response = await axios.get(`${BASE_URL}/author/${author}`);
+        return res.status(200).json(response.data);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+  });
+
 module.exports.general = public_users_async;
